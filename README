@@ -1,0 +1,24 @@
+== Keyduino ==
+
+* Apple II
+
+The Apple II uses an ASCII keyboard, which means that rather than returning scan codes, it returns a 7-bit ASCII value. This means you can’t read the state of modifier keys like Shift or Control independently, and the Apple II keyboard in particular doesn’t even support lower-case letters. The state of the Control key is seen in ASCII bit 6, or, put another way, Control-A sends 0x01 and plain A sends 0x41, which differ by 0x40 or 00100000b. The key Keyduino sends when Control is pressed can be modified by changing ctrlKey in the source. Control+H, Control+M, Control+], and Control+U, unfortunately, cannot be mapped, as these send the same ASCII values as the Backspace (left arrow), Return, Escape, and Tab (right arrow) keys, respectively.
+
+The Reset key is available on pin 3 of the keyboard connector, and I have mapped this to a "Caps Lock" function, of sorts. One may instead wish to perform the "Shift-Key Mod": http://support.apple.com/kb/TA30700 and connect that wire to a pin on the Teensy and use the Reset key for another function -- for example, as another modifier key.
+
+** Connection
+
+See the code for the mapping of keyboard connector pins to Teensy pins, and change the pin constants as necessary (e.g. pin C2 may not be present on your Teensy, so you might replace PIN_C2 with PIN_B0, for example). Be aware that even though the keyboard's light will illuminate with power provided only on the +5V pin, -12V is still required for the keyboard to function.
+
+        +---| |----+
+   +5v  | 1     16 | NC
+Strobe  | 2     15 | -12v
+~Reset  | 3     14 | NC
+    NC  | 4     13 | Data 1
+Data 5  | 5     12 | Data 0
+Data 4  | 6     11 | Data 3
+Data 6  | 7     10 | Data 2
+   Gnd  | 8      9 | NC
+        +----------+
+
+(from http://apple2.info/wiki/index.php?title=Pinouts#Apple_II.2FII.2B_Keyboard_Socket )
